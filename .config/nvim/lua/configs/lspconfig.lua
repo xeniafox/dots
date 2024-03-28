@@ -1,6 +1,9 @@
 local lspconfig = require("lspconfig")
+local coq = require("coq")
 
-lspconfig.lua_ls.setup {
+require('java').setup()
+
+lspconfig.lua_ls.setup(coq.lsp_ensure_capabilities({
   settings = {
     Lua = {
       completion = {
@@ -8,12 +11,10 @@ lspconfig.lua_ls.setup {
       }
     }
   }
-}
+}))
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-lspconfig.clangd.setup({
-  capabilities = capabilities,
-})
-
-lspconfig.phpactor.setup({})
+lspconfig.clangd.setup(coq.lsp_ensure_capabilities({}))
+lspconfig.phpactor.setup(coq.lsp_ensure_capabilities({}))
+lspconfig.jdtls.setup(coq.lsp_ensure_capabilities({}))
