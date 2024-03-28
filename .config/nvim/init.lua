@@ -84,22 +84,33 @@ plugins = {
       require 'configs.lspconfig'
     end},
 
-  { "hrsh7th/cmp-nvim-lsp",
-    config = function()
-      require'cmp'.setup {
-        sources = {
-          { name = 'nvim_lsp' }
-        }
-      }
-    end },
+  --{ "hrsh7th/cmp-nvim-lsp",
+    --config = function()
+    --  require'cmp'.setup {
+    --    sources = {
+    --      { name = 'nvim_lsp' }
+    --    }
+    --  }
+    --end },
 
-  { "hrsh7th/cmp-buffer" },
+  --{ "hrsh7th/cmp-buffer" },
 
-  { "hrsh7th/cmp-path" },
+  --{ "hrsh7th/cmp-path" },
 
-  { "hrsh7th/cmp-cmdline" },
+  --{ "hrsh7th/cmp-cmdline" },
 
-  { "hrsh7th/nvim-cmp" },
+  --{ "hrsh7th/nvim-cmp" },
+  { "ms-jpq/coq_nvim",
+    branch = "coq",
+    lazy = false },
+
+  { "ms-jpq/coq.artifacts",
+    branch = "artifacts",
+    lazy = false },
+
+  { "ms-jpq/coq.thirdparty",
+    branch = "3p",
+    lazy = false },
 
   { "scrooloose/nerdcommenter" },
 
@@ -156,6 +167,21 @@ plugins = {
                      "mfussenegger/nvim-dap" },
     opts = { handlers = {} } },
 
+  { "onsails/lspkind.nvim" },
+
+  { "nvim-java/nvim-java",
+    dependencies = {
+      "nvim-java/lua-async-await",
+      "nvim-java/nvim-java-core",
+      "nvim-java/nvim-java-test",
+      "nvim-java/nvim-java-dap",
+      "MunifTanjim/nui.nvim",
+      "neovim/nvim-lspconfig",
+      "mfussenegger/nvim-dap",
+      { "williamboman/mason.nvim",
+        opts = { registries = { "github:nvim-java/mason-registry",
+                                "github:mason-org/mason-registry" } } } } },
+
   { "rcarriga/nvim-dap-ui",
     event = "VeryLazy",
     dependencies = "mfussenegger/nvim-dap",
@@ -182,6 +208,7 @@ opts = {}
 
 require("lazy").setup(plugins, opts)
 
+vim.cmd("set rnu")
 vim.cmd("set t_Co=256")
 --vim.cmd.colorscheme "pride"
 --vim.cmd.colorscheme "everforest"
@@ -244,4 +271,15 @@ if vim.g.neovide then
   vim.g.neovide_cursor_trail_size = 0.4
   vim.g.neovide_scroll_animation_length = 0.18
   vim.g.neovide_refresh_rate = 60
+  vim.o.guifont = "Comic Mono:h10"
 end
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function (ev)
+    local opts = { buffer = ev.buf }
+
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', '<Space>lw', vim.lsp.buf.signature_help, opts)
+  end
+})
